@@ -3,12 +3,14 @@
 require_once 'config.php';
  
 // Define variables and initialize with empty values
-$name = $address = $salary = "";
-$name_err = $address_err = $salary_err = "";
+ $name = $address = $email = $age = $country = $sex = "";
+ $name_err = $address_err = $email_err = $age_err = $country_err = $sex_err = "";
  
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-    // Validate name
+  
+  
+  // Validate name
     $input_name = trim($_POST["name"]);
     if(empty($input_name)){
         $name_err = "Please enter a name.";
@@ -17,7 +19,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     } else{
         $name = $input_name;
     }
-    
+     
     // Validate address
     $input_address = trim($_POST["address"]);
     if(empty($input_address)){
@@ -26,31 +28,59 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $address = $input_address;
     }
     
-    // Validate salary
-    $input_salary = trim($_POST["salary"]);
-    if(empty($input_salary)){
-        $salary_err = "Please enter the salary amount.";     
-    } elseif(!ctype_digit($input_salary)){
-        $salary_err = 'Please enter a positive integer value.';
+    // Validate email
+    $input_email = trim($_POST["email"]);
+    if(empty($input_email)){
+        $email_err = "Please enter the email address.";     
     } else{
-        $salary = $input_salary;
+        $email = $input_email;
+    }
+  
+  //validate age
+  
+  $input_age = trim($_POST["age"]);
+    if(empty($input_age)){
+        $age_err = "Please enter your age.";     
+    } else{
+        $age = $input_age;
+    }
+  
+  // validate country
+  $input_country = trim($_POST["country"]);
+    if(empty($input_country)){
+        $country_err = "Please enter your country .";     
+    } else{
+        $country = $input_country;
+    }
+  //validate sex
+  $input_sex = trim($_POST["sex"]);
+    if(empty($input_sex)){
+        $sex_err = "Please enter your sex .";     
+    } else{
+        $sex = $input_sex;
     }
     
     // Check input errors before inserting in database
-    if(empty($name_err) && empty($address_err) && empty($salary_err)){
+    if(empty($name_err) && empty($address_err) && empty($email_err) && empty($age_err) && empty($country_err)  && empty($sex_err)) {
         // Prepare an insert statement
-        $sql = "INSERT INTO employees (name, address, salary) VALUES (:name, :address, :salary)";
+        $sql = "INSERT INTO Driver (name, address, email, age, country, sex) VALUES (:name, :address, :email, :age, :country, :sex )";
  
         if($stmt = $pdo->prepare($sql)){
-            // Bind variables to the prepared statement as parameters
-            $stmt->bindParam(':name', $param_name);
+            // Bind variables to the prepared statement as parameters 
+          $stmt->bindParam(':name', $param_name);
             $stmt->bindParam(':address', $param_address);
-            $stmt->bindParam(':salary', $param_salary);
+            $stmt->bindParam(':email', $param_email);
+          $stmt->bindParam(':age', $param_age);
+          $stmt->bindParam(':country', $param_country);
+          $stmt->bindParam(':sex', $param_sex);
             
-            // Set parameters
+            // Set parameter
             $param_name = $name;
             $param_address = $address;
-            $param_salary = $salary;
+            $param_email = $email;
+           $param_age = $age;
+           $param_country = $country;
+           $param_sex = $sex;          
             
             // Attempt to execute the prepared statement
             if($stmt->execute()){
@@ -60,12 +90,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             } else{
                 echo "Something went wrong. Please try again later.";
             }
-        }
-         
+        }    
         // Close statement
         unset($stmt);
-    }
-    
+    } 
     // Close connection
     unset($pdo);
 }
@@ -104,10 +132,25 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             <textarea name="address" class="form-control"><?php echo $address; ?></textarea>
                             <span class="help-block"><?php echo $address_err;?></span>
                         </div>
-                        <div class="form-group <?php echo (!empty($salary_err)) ? 'has-error' : ''; ?>">
-                            <label>Salary</label>
-                            <input type="text" name="salary" class="form-control" value="<?php echo $salary; ?>">
-                            <span class="help-block"><?php echo $salary_err;?></span>
+                        <div class="form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
+                            <label>email</label>
+                            <input type="text" name="email" class="form-control" value="<?php echo $email; ?>">
+                            <span class="help-block"><?php echo $email_err;?></span>
+                        </div>
+                      <div class="form-group <?php echo (!empty($age_err)) ? 'has-error' : ''; ?>">
+                            <label>age</label>
+                            <input type="text" name="age" class="form-control" value="<?php echo $age; ?>">
+                            <span class="help-block"><?php echo $age_err;?></span>
+                        </div>
+                      <div class="form-group <?php echo (!empty($country_err)) ? 'has-error' : ''; ?>">
+                            <label>country</label>
+                            <input type="text" name="country" class="form-control" value="<?php echo $country; ?>">
+                            <span class="help-block"><?php echo $country_err;?></span>
+                        </div>
+                      <div class="form-group <?php echo (!empty($sex_err)) ? 'has-error' : ''; ?>">
+                            <label>sex</label>
+                            <input type="text" name="sex" class="form-control" value="<?php echo $sex; ?>">
+                            <span class="help-block"><?php echo $sex_err;?></span>
                         </div>
                         <input type="submit" class="btn btn-primary" value="Submit">
                         <a href="index.php" class="btn btn-default">Cancel</a>
